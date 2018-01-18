@@ -23,7 +23,7 @@ void Clock::Start()
 	lastTimeInCounts = currentTimeInCounts;
 }
 
-double Clock::DeltaTime()
+double Clock::Refresh()
 {
 	__int64 currentTimeInCounts, timePassedSinceLastTimeInCounts;
 	// Calculate time passed in seconds since last call to
@@ -35,6 +35,7 @@ double Clock::DeltaTime()
 		(currentTimeInCounts - lastTimeInCounts) /
 		(double)countsPerSecond;
 	lastTimeInCounts = currentTimeInCounts;
+	DeltaTime = timePassedSinceLastTimeInSeconds;
 	return timePassedSinceLastTimeInSeconds;
 }
 

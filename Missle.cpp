@@ -5,45 +5,29 @@
 #include <gl\GLU.h>
 
 Missle::Missle()
-{
-}
+{}
 
 
 Missle::~Missle()
+{}
+
+void Missle::FireMissle(Vector3f position, Vector3f dir)
 {
+	Missle missle;
+	missle.DrawCylinder();
 }
 
-static void FireMissle(Vector3f position, Vector3f dir)
+Material yellowPlasticMaterial =
 {
-	DrawCylinder();
-}
-
-typedef struct materialStruct
-{
-	GLfloat ambient[4];
-	GLfloat diffuse[4];
-	GLfloat specular[4];
-	GLfloat shininess[4];
-} Material;
-
-Material yellowPlasticMaterial = {
-	{ 0.4, 0.4, 0.0, 1.0 }, // Ambient
+	{ 0.4, 0.4, 0.0, 1.0 }, // 
 	{ 0.9, 0.9, 0.0, 1.0 }, // Diffuse
 	{ 0.8, 0.8, 0.8, 1.0 }, // Specular
-	8                      // Shininess
+	8                       // Shininess
 };
-
-void SetMaterial(Material *m)
-{
-	glMaterialfv(GL_FRONT, GL_AMBIENT, m->ambient);
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, m->diffuse);
-	glMaterialfv(GL_FRONT, GL_SHININESS, m->shininess);
-	glMaterialfv(GL_FRONT, GL_SPECULAR, m->specular);
-}
 
 GLUquadric *myCylinder;
 
-void DrawCylinder()
+void Missle::DrawCylinder()
 {
 	glEnable(GL_LIGHTING);
 	gluQuadricNormals(myCylinder, GLU_SMOOTH);

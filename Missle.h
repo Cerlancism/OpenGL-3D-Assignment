@@ -1,9 +1,14 @@
 #pragma once
+#include "Vector3f.h"
+
 class Missle
 {
 public:
 	Missle();
 	~Missle();
-	void FireMissle(Vector3f position, Vector3f dir);
+	static void FireMissle(Vector3f position, Vector3f dir);
+
+private:
+	void DrawCylinder();
 };
 
