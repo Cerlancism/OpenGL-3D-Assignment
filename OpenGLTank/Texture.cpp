@@ -46,7 +46,7 @@ void Texture::initialiseGroundTexture()
 	ColorInt light{ 151, 108 , 74 };
 	ColorInt dark{ 100, 80, 40 };
 	vector<vector<ColorInt>> colors;
-	int divisions = 32;
+	int divisions = 64;
 	for (int i = 0; i < divisions; i++)
 	{
 		colors.push_back(vector<ColorInt>(divisions));

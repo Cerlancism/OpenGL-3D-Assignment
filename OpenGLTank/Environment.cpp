@@ -2,12 +2,21 @@
 #include "Environment.h"
 
 Environment Environment::Global;
+GLUquadric* skySphere;
+
+Material skyMaterial =
+{
+	{ 80 / 256.0, 214 / 256.0, 255.0 / 256.0, 1.0 }, // Ambient
+	{ 213 / 256.0, 256.0 / 256.0, 255.0 / 256.0, 1.0 }, // Diffuse
+	{ 0.0, 0.0, 0.0, 1.0 }, // Specular
+	8						// Shininess
+};
 
 Environment::Environment()
 {
-
+	skySphere = gluNewQuadric();
+	gluQuadricDrawStyle(skySphere, GLU_FILL);
 }
-
 
 Environment::~Environment()
 {}
@@ -29,6 +38,7 @@ void Environment::DrawGround()
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	int areasize = 50;
 	glPushMatrix();
+	glScalef(2, 2, 2);
 	glTranslatef(-6 * areasize /2, 0, -6 * areasize /2);
 	for (int i = 0; i < areasize; i++)
 	{
@@ -55,4 +65,12 @@ void Environment::DrawGround()
 }
 
 void Environment::DrawSkyBox()
-{}
+{
+	glPushMatrix();
+	gluQuadricNormals(skySphere, GLU_SMOOTH);
+	glEnable(GL_LIGHTING);
+	SetMaterial(&skyMaterial);
+	gluSphere(skySphere, 1000, 128, 128);
+	glDisable(GL_LIGHTING);
+	glPopMatrix();
+}
