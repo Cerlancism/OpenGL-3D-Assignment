@@ -30,8 +30,11 @@ public:
 	TreeNode* jointNode;
 
 	Vector3f Position;
+	Vector3f Rotation;
+	Vector3f Direction;
 	float TurnSpeed = 200;
 	float MaxSpeed = 50;
+	float Drag = 10;
 
 	Tank();
 	void BuildTree();
@@ -41,8 +44,16 @@ public:
 	void DrawBase();
 	void DrawLowerArm();
 	void DrawJoint();
+	void Update();
 	void HandleKeyDown(WPARAM wParam);
+	void HandleKeyUp(WPARAM wParam);
 	~Tank();
+
+private:
+	int accelerationState = 0;
+	float currentAcceleration = 0;
+	float currentSpeed = 0;;
+	int rotationState = 0;
 };
 
 

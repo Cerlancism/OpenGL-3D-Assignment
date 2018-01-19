@@ -6,10 +6,10 @@ GLUquadric* skySphere;
 
 Material skyMaterial =
 {
-	{ 80 / 256.0, 214 / 256.0, 255.0 / 256.0, 1.0 }, // Ambient
-	{ 213 / 256.0, 256.0 / 256.0, 255.0 / 256.0, 1.0 }, // Diffuse
-	{ 0.0, 0.0, 0.0, 1.0 }, // Specular
-	8						// Shininess
+	{ 80 / 256.0, 214 / 256.0, 255.0 / 256.0, 1 }, // Ambient
+	{ 213 / 256.0, 256.0 / 256.0, 255.0 / 256.0, 1 }, // Diffuse
+	{ 0.5, 0.5, 0.5, 1 }, // Specular
+	1						// Shininess
 };
 
 Environment::Environment()
@@ -36,9 +36,9 @@ void Environment::DrawGround()
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	int areasize = 50;
+	int areasize = 5;
 	glPushMatrix();
-	glScalef(2, 2, 2);
+	glScalef(20, 20, 20);
 	glTranslatef(-6 * areasize /2, 0, -6 * areasize /2);
 	for (int i = 0; i < areasize; i++)
 	{
@@ -67,8 +67,8 @@ void Environment::DrawGround()
 void Environment::DrawSkyBox()
 {
 	glPushMatrix();
-	gluQuadricNormals(skySphere, GLU_SMOOTH);
 	glEnable(GL_LIGHTING);
+	gluQuadricNormals(skySphere, GLU_SMOOTH);
 	SetMaterial(&skyMaterial);
 	gluSphere(skySphere, 1000, 128, 128);
 	glDisable(GL_LIGHTING);

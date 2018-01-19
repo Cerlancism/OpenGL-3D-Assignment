@@ -77,6 +77,36 @@ void Tank::BuildTree()
 	lowerArmNode->sibling = jointNode;
 }
 
+void Tank::Update()
+{
+	currentAcceleration = 20;
+	currentSpeed = abs(currentSpeed) >= MaxSpeed ? currentSpeed : currentSpeed += (accelerationState * currentAcceleration * Clock::DeltaTime);
+	currentSpeed = currentSpeed > 0 ? 
+		currentSpeed - Drag * Clock::DeltaTime < 0 ? 0 : currentSpeed - Drag * Clock::DeltaTime : 
+		currentSpeed + Drag * Clock::DeltaTime > 0 ? 0 : currentSpeed + Drag * Clock::DeltaTime;
+
+	Rotation.Y = fmod(Rotation.Y * 180.0 / 3.14159265 + (rotationState * TurnSpeed * Clock::DeltaTime), 360.0f);
+	Rotation.Y = Rotation.Y < 0 ? 360 + Rotation.Y : Rotation.Y;
+	Rotation.Y = Rotation.Y * 3.14159265 / 180.0;
+
+	Direction.X = sin(Rotation.Y);
+	Direction.Z = cos(Rotation.Y);
+
+	Position.X += Direction.X * currentSpeed * Clock::DeltaTime;
+	Position.Z += Direction.Z * currentSpeed * Clock::DeltaTime;
+	//Debug::Log(to_string(Rotation.Y));
+	//Debug::Log(to_string(Direction.X) + ", " + to_string(Direction.Z));
+	Debug::Log(to_string(Position.X) + ", " + to_string(Position.Z));
+
+	glPushMatrix();
+	glMultMatrixf(tree->matrix);
+	glRotatef(rotationState * TurnSpeed * Clock::DeltaTime, 0, 1, 0);
+	glTranslatef(0, 0, currentSpeed * Clock::DeltaTime);
+	glGetFloatv(GL_MODELVIEW_MATRIX, tree->matrix);// get & stores transform
+	glLoadIdentity();
+	glPopMatrix();
+}
+
 void Tank::Draw()
 {
 	glEnable(GL_LIGHTING);
@@ -300,33 +330,43 @@ void Tank::HandleKeyDown(WPARAM wParam)
 			break;
 
 		case 0x57: // W
-			glMultMatrixf(tree->matrix);
-			glTranslatef(0 , 0, MaxSpeed * Clock::DeltaTime);
-			glGetFloatv(GL_MODELVIEW_MATRIX, tree->matrix);// get & stores transform
+			accelerationState = 1;
 			break;
 
 		case 0x53: // S
-			glMultMatrixf(tree->matrix);
-			glTranslatef(0, 0, MaxSpeed * -Clock::DeltaTime);
-			glGetFloatv(GL_MODELVIEW_MATRIX, tree->matrix);// get & stores transform
+			accelerationState = -1;
 			break;
 
 		case 0x41: // A
-			glMultMatrixf(tree->matrix);
-			glRotatef(TurnSpeed * Clock::DeltaTime ,0, 1, 0);
-			glGetFloatv(GL_MODELVIEW_MATRIX, tree->matrix);// get & stores transform
+			rotationState = 1;
 			break;
 
 		case 0x44: // D
-			glMultMatrixf(tree->matrix);
-			glRotatef(-TurnSpeed * Clock::DeltaTime, 0, 1, 0);
-			glGetFloatv(GL_MODELVIEW_MATRIX, tree->matrix);// get & stores transform
+			rotationState = -1;
 			break;
+	}
+
+	glLoadIdentity();
+}
+
+void Tank::HandleKeyUp(WPARAM wParam)
+{
+	switch (wParam)
+	{
+		case 0x57: // W
+			accelerationState = 0;
 			break;
 
+		case 0x53: // S
+			accelerationState = 0;
+			break;
+
+		case 0x41: // A
+			rotationState = 0;
+			break;
+
+		case 0x44: // D
+			rotationState = 0;
+			break;
 	}
-	// Update the position & rotation of the complete robot arm
-	glLoadIdentity();
-	// TODO: Update the rotation of the lower arm
-	// TODO: Update the rotation of the upper arm
 }
