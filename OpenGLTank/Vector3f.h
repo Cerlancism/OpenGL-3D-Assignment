@@ -30,5 +30,3 @@ Vector3f operator*(float multiplier, Vector3f value);
 
 Vector3f operator/(Vector3f value, float divider);
 
-Vector3f operator/(float divider, Vector3f value);
-

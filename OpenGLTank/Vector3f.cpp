@@ -99,14 +99,5 @@ Vector3f operator/(Vector3f value, float divider)
 	return value;
 }
 
-Vector3f operator/(float divider, Vector3f value)
-{
-	value.X /= divider;
-	value.Y /= divider;
-	value.Z /= divider;
-	return value;
-}
-
-
 Vector3f::~Vector3f()
 {}

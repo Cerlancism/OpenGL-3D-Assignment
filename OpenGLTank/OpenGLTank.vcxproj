@@ -152,6 +152,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Clock.h" />
+    <ClInclude Include="ColorInt.h" />
     <ClInclude Include="Debug.h" />
     <ClInclude Include="Environment.h" />
     <ClInclude Include="Missle.h" />
@@ -160,10 +161,12 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Tank.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="Texture.h" />
     <ClInclude Include="Vector3f.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Clock.cpp" />
+    <ClCompile Include="ColorInt.cpp" />
     <ClCompile Include="Debug.cpp" />
     <ClCompile Include="Environment.cpp" />
     <ClCompile Include="Missle.cpp" />
@@ -175,6 +178,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Tank.cpp" />
+    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Vector3f.cpp" />
   </ItemGroup>
   <ItemGroup>
