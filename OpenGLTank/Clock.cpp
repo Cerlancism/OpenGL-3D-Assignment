@@ -1,6 +1,12 @@
 #include "stdafx.h"
 #include "Clock.h"
 
+static __int64 countsPerSecond;
+static __int64 startTimeInCounts = 0;
+static __int64 lastTimeInCounts = 0;
+float Clock::DeltaTime = 0;
+
+Clock Clock::GlobalClock;
 
 Clock::Clock()
 {
@@ -35,7 +41,7 @@ double Clock::Refresh()
 		(currentTimeInCounts - lastTimeInCounts) /
 		(double)countsPerSecond;
 	lastTimeInCounts = currentTimeInCounts;
-	DeltaTime = timePassedSinceLastTimeInSeconds;
+	DeltaTime = (float)timePassedSinceLastTimeInSeconds;
 	return timePassedSinceLastTimeInSeconds;
 }
 

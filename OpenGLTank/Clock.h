@@ -3,16 +3,15 @@
 class Clock
 {
 public:
-	__int64 startTimeInCounts = 0;
-	__int64 lastTimeInCounts = 0;
-	__int64 countsPerSecond;
-	double DeltaTime;
+	static float DeltaTime;
+
+	static Clock GlobalClock;
 
 	Clock();
 
-	void Start();
-	double Refresh();
-	double TimePassedSinceStartTime();
+	static void Start();
+	static double Refresh();
+	static double TimePassedSinceStartTime();
 
 	~Clock();
 };
