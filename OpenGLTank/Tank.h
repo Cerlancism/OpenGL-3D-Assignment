@@ -16,14 +16,13 @@ class Tank
 {
 public:
 	float yRotBase;
-	float rotLowerArm = -45;
 	float xPos;
 	float yPos;
 	float zPos;
 	GLUquadricObj *base;
 	GLUquadricObj *baseCover;
-	GLUquadricObj *lowerArm;
-	GLUquadricObj *joint;
+	GLUquadricObj *turrentQuadratic;
+	GLUquadricObj *jointQuadratic;
 	// Following Nodes need to available in HandleKeyDown
 	TreeNode* tree;
 	TreeNode* lowerArmNode;
@@ -32,7 +31,10 @@ public:
 	Vector3f Position;
 	Vector3f Rotation;
 	Vector3f Direction;
+	Vector3f TurrentPosition;
+	Vector3f TurrentDirection;
 	float TurnSpeed = 200;
+	float TurretTurnSpeed = 100;
 	float MaxSpeed = 50;
 	float Drag = 10;
 
@@ -42,7 +44,7 @@ public:
 	void DrawFunction(int id);
 	void Draw();
 	void DrawBase();
-	void DrawLowerArm();
+	void DrawTurret();
 	void DrawJoint();
 	void Update();
 	void HandleKeyDown(WPARAM wParam);
@@ -52,8 +54,16 @@ public:
 private:
 	int accelerationState = 0;
 	float currentAcceleration = 0;
-	float currentSpeed = 0;;
+	float currentSpeed = 0;
 	int rotationState = 0;
+	int turretRotationState = 0;
+	int turrentPitchState = 0;
+
+	float turrentRotation = 90;
+	float turrentPitch = 22.5;
+
+	float tRot = 0;
+	float tPitch = PI / 8;
 };
 
 

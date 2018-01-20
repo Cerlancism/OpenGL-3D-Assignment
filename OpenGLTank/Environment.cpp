@@ -6,10 +6,10 @@ GLUquadric* skySphere;
 
 Material skyMaterial =
 {
-	{ 80 / 256.0, 214 / 256.0, 255.0 / 256.0, 1 }, // Ambient
-	{ 213 / 256.0, 256.0 / 256.0, 255.0 / 256.0, 1 }, // Diffuse
-	{ 0.5, 0.5, 0.5, 1 }, // Specular
-	1						// Shininess
+	{ 0.5, 2, 3, 1 }, // Ambient
+	{ 0, 1, 3, 1 }, // Diffuse
+	{ 0, 0, 0, 1 }, // Specular
+	8						// Shininess
 };
 
 Environment::Environment()
@@ -70,7 +70,7 @@ void Environment::DrawSkyBox()
 	glEnable(GL_LIGHTING);
 	gluQuadricNormals(skySphere, GLU_SMOOTH);
 	SetMaterial(&skyMaterial);
-	gluSphere(skySphere, 1000, 128, 128);
+	gluSphere(skySphere, 500, 128, 128);
 	glDisable(GL_LIGHTING);
 	glPopMatrix();
 }

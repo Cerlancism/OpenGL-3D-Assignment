@@ -5,14 +5,14 @@ Texture bodyTexture;
 
 Tank::Tank()
 {
-	joint = gluNewQuadric();
-	gluQuadricDrawStyle(joint, GLU_FILL);
+	jointQuadratic = gluNewQuadric();
+	gluQuadricDrawStyle(jointQuadratic, GLU_FILL);
 
 	base = gluNewQuadric();
 	gluQuadricDrawStyle(base, GLU_FILL);
 
-	lowerArm = gluNewQuadric();
-	gluQuadricDrawStyle(lowerArm, GLU_FILL);
+	turrentQuadratic = gluNewQuadric();
+	gluQuadricDrawStyle(turrentQuadratic, GLU_FILL);
 
 	ColorInt light{ 0, 250 , 0 };
 	ColorInt dark{ 0, 100, 0 };
@@ -32,11 +32,9 @@ Tank::Tank()
 
 
 Tank::~Tank()
-{}
+{
 
-int TreeID = 0;
-int LowerArmID = 10;
-int JointID = 20;
+}
 
 void Tank::BuildTree()
 {
@@ -54,7 +52,7 @@ void Tank::BuildTree()
 	lowerArmNode->drawFunctionID = DRAW_LOWERARM_FUNCTION_ID;
 	glLoadIdentity();
 	glTranslatef(0, 1, 0);
-	glRotatef(rotLowerArm, 1, 0, 0);
+	glRotatef(-22.5, 1, 0, 0);
 	glGetFloatv(GL_MODELVIEW_MATRIX, lowerArmNode->matrix);
 	// The first joint
 	jointNode = new TreeNode;
@@ -79,24 +77,47 @@ void Tank::BuildTree()
 
 void Tank::Update()
 {
-	currentAcceleration = 20;
+	currentAcceleration = sin(abs(currentSpeed) / MaxSpeed * (PI)) * 33 + 1;
 	currentSpeed = abs(currentSpeed) >= MaxSpeed ? currentSpeed : currentSpeed += (accelerationState * currentAcceleration * Clock::DeltaTime);
-	currentSpeed = currentSpeed > 0 ? 
-		currentSpeed - Drag * Clock::DeltaTime < 0 ? 0 : currentSpeed - Drag * Clock::DeltaTime : 
-		currentSpeed + Drag * Clock::DeltaTime > 0 ? 0 : currentSpeed + Drag * Clock::DeltaTime;
+	float currentDrag = Drag * Clock::DeltaTime * (abs(currentSpeed) / 10) + 0.1 * Clock::DeltaTime;
+	float positiveDrag = currentSpeed - currentDrag, negativeDrag = currentSpeed + currentDrag;
+	currentSpeed = currentSpeed > 0 ? positiveDrag < 0 ? 0 : positiveDrag : negativeDrag > 0 ? 0 : negativeDrag;
 
-	Rotation.Y = fmod(Rotation.Y * 180.0 / 3.14159265 + (rotationState * TurnSpeed * Clock::DeltaTime), 360.0f);
+	Rotation.Y = fmod(Rotation.Y * 180.0 / PI + (rotationState * TurnSpeed * Clock::DeltaTime), 360.0f);
 	Rotation.Y = Rotation.Y < 0 ? 360 + Rotation.Y : Rotation.Y;
-	Rotation.Y = Rotation.Y * 3.14159265 / 180.0;
+	Rotation.Y = Rotation.Y * PI / 180.0;
 
 	Direction.X = sin(Rotation.Y);
 	Direction.Z = cos(Rotation.Y);
 
 	Position.X += Direction.X * currentSpeed * Clock::DeltaTime;
 	Position.Z += Direction.Z * currentSpeed * Clock::DeltaTime;
-	//Debug::Log(to_string(Rotation.Y));
-	//Debug::Log(to_string(Direction.X) + ", " + to_string(Direction.Z));
-	Debug::Log(to_string(Position.X) + ", " + to_string(Position.Z));
+
+	if (turrentPitch >= 0 || turrentPitch <= 45)
+	{
+		float newRotation = turrentPitch + turrentPitchState * TurretTurnSpeed * Clock::DeltaTime;
+		newRotation = newRotation < 0 ? 0 : newRotation;
+		newRotation = newRotation > 45 ? 45 : newRotation;
+		turrentPitch = newRotation;
+		if (turrentPitch == 0 && turrentPitchState == -1)
+		{
+			turrentPitchState = 0;
+		}
+		if (turrentPitch == 45 && turrentPitchState == 1)
+		{
+			turrentPitchState = 0;
+		}
+	}
+
+	tRot += turretRotationState * TurretTurnSpeed * Clock::DeltaTime * PI / 180.0;
+	tPitch += turrentPitchState * TurretTurnSpeed * Clock::DeltaTime * PI / 180.0;
+	TurrentDirection.X = sin(Rotation.Y + tRot);
+	TurrentDirection.Z = cos(Rotation.Y + tRot);
+	TurrentDirection.Y = sin(tPitch);
+	TurrentDirection.X *= cos(tPitch);
+	TurrentDirection.Z *= cos(tPitch);
+
+	TurrentPosition = TurrentDirection * 1.5 + Position + Vector3f(0, 1, 0);
 
 	glPushMatrix();
 	glMultMatrixf(tree->matrix);
@@ -105,12 +126,32 @@ void Tank::Update()
 	glGetFloatv(GL_MODELVIEW_MATRIX, tree->matrix);// get & stores transform
 	glLoadIdentity();
 	glPopMatrix();
+
+	glPushMatrix();
+	glRotatef(turretRotationState * TurretTurnSpeed * Clock::DeltaTime, 0, 1, 0);
+	glMultMatrixf(lowerArmNode->matrix);
+	glGetFloatv(GL_MODELVIEW_MATRIX, lowerArmNode->matrix);// get & stores transform
+	glLoadIdentity();
+	glPopMatrix();
+
+	glPushMatrix();
+	glMultMatrixf(lowerArmNode->matrix);
+	glRotatef(turrentPitchState * -TurretTurnSpeed * Clock::DeltaTime, 1, 0, 0);
+	glGetFloatv(GL_MODELVIEW_MATRIX, lowerArmNode->matrix);// get & stores transform
+	glPopMatrix();
 }
 
 void Tank::Draw()
 {
 	glEnable(GL_LIGHTING);
 	DrawTree(tree);
+
+	glPushMatrix();
+	glTranslatef(TurrentPosition.X, TurrentPosition.Y, TurrentPosition.Z);
+	SetMaterial(&yellowPlasticMaterial);
+	gluSphere(jointQuadratic, 0.25, 8, 8);
+	glPopMatrix();
+
 	glDisable(GL_LIGHTING);
 }
 
@@ -136,7 +177,7 @@ void Tank::DrawFunction(int id)
 			DrawBase();
 			break;
 		case DRAW_LOWERARM_FUNCTION_ID:
-			DrawLowerArm();
+			DrawTurret();
 			break;
 		case DRAW_JOINT_FUNCTION_ID:
 			DrawJoint();
@@ -279,11 +320,11 @@ void Tank::DrawBase()
 	glDisable(GL_TEXTURE_2D);
 }
 
-void Tank::DrawLowerArm()
+void Tank::DrawTurret()
 {
 	glPushMatrix();
 	SetMaterial(&redPlasticMaterial);
-	gluCylinder(lowerArm, 0.15, 0.15, 2, 64, 64);
+	gluCylinder(turrentQuadratic, 0.15, 0.15, 1.5, 64, 64);
 	glPopMatrix();
 }
 
@@ -291,7 +332,7 @@ void Tank::DrawJoint()
 {
 	glPushMatrix();
 	SetMaterial(&yellowPlasticMaterial);
-	gluSphere(joint, 0.4, 64, 64);
+	gluSphere(jointQuadratic, 0.4, 64, 64);
 	glPopMatrix();
 }
 
@@ -302,31 +343,19 @@ void Tank::HandleKeyDown(WPARAM wParam)
 	switch (wParam)
 	{
 		case VK_LEFT:
-			glPushMatrix();
-			glRotatef(TurnSpeed * Clock::DeltaTime, 0, 1, 0);
-			glMultMatrixf(lowerArmNode->matrix);
-			glGetFloatv(GL_MODELVIEW_MATRIX, lowerArmNode->matrix);// get & stores transform
-			glPopMatrix();
+			turretRotationState = 1;
 			break;
 
 		case VK_RIGHT:
-			glPushMatrix();
-			glRotatef(-TurnSpeed * Clock::DeltaTime, 0, 1, 0);
-			glMultMatrixf(lowerArmNode->matrix);
-			glGetFloatv(GL_MODELVIEW_MATRIX, lowerArmNode->matrix);// get & stores transform
-			glPopMatrix();
+			turretRotationState = -1;
 			break;
 
 		case VK_UP:
-			glMultMatrixf(lowerArmNode->matrix);
-			glRotatef(-TurnSpeed * Clock::DeltaTime, 1, 0, 0);
-			glGetFloatv(GL_MODELVIEW_MATRIX, lowerArmNode->matrix);// get & stores transform
+			turrentPitchState = 1;
 			break;
 
 		case VK_DOWN:
-			glMultMatrixf(lowerArmNode->matrix);
-			glRotatef(TurnSpeed * Clock::DeltaTime, 1, 0, 0);
-			glGetFloatv(GL_MODELVIEW_MATRIX, lowerArmNode->matrix);// get & stores transform
+			turrentPitchState = -1;
 			break;
 
 		case 0x57: // W
@@ -353,6 +382,22 @@ void Tank::HandleKeyUp(WPARAM wParam)
 {
 	switch (wParam)
 	{
+		case VK_LEFT:
+			turretRotationState = 0;
+			break;
+
+		case VK_RIGHT:
+			turretRotationState = 0;
+			break;
+
+		case VK_UP:
+			turrentPitchState = 0;
+			break;
+
+		case VK_DOWN:
+			turrentPitchState = 0;
+			break;
+
 		case 0x57: // W
 			accelerationState = 0;
 			break;

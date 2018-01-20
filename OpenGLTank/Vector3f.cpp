@@ -56,6 +56,21 @@ void Vector3f::Normalise()
 	Z = Z / length;
 }
 
+Vector3f Vector3f::Normalised()
+{
+	Vector3f normalised;
+	float length = GetLength();
+	normalised.X = X / length;
+	normalised.Y = Y / length;
+	normalised.Z = Z / length;
+	return normalised;
+}
+
+std::string Vector3f::ToString()
+{
+	return std::string(to_string(X) + ", " + to_string(Y) + ", " + to_string(Z));
+}
+
 //Operator behaviours
 Vector3f operator+(Vector3f left, Vector3f right)
 {

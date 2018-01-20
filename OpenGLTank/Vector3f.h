@@ -16,6 +16,9 @@ public:
 	float GetLength();
 
 	void Normalise();
+	Vector3f Normalised();
+
+	std::string ToString();
 
 	~Vector3f();
 };
