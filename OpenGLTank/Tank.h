@@ -20,19 +20,18 @@ public:
 	float yPos;
 	float zPos;
 	GLUquadricObj *base;
-	GLUquadricObj *baseCover;
-	GLUquadricObj *turrentQuadratic;
+	GLUquadricObj *turretQuadratic;
 	GLUquadricObj *jointQuadratic;
 	// Following Nodes need to available in HandleKeyDown
 	TreeNode* tree;
-	TreeNode* lowerArmNode;
+	TreeNode* turretNode;
 	TreeNode* jointNode;
 
 	Vector3f Position;
 	Vector3f Rotation;
 	Vector3f Direction;
-	Vector3f TurrentPosition;
-	Vector3f TurrentDirection;
+	Vector3f TurretPosition;
+	Vector3f TurretDirection;
 	float TurnSpeed = 200;
 	float TurretTurnSpeed = 100;
 	float MaxSpeed = 50;
@@ -57,10 +56,10 @@ private:
 	float currentSpeed = 0;
 	int rotationState = 0;
 	int turretRotationState = 0;
-	int turrentPitchState = 0;
+	int turretPitchState = 0;
 
-	float turrentRotation = 90;
-	float turrentPitch = 22.5;
+	float turretRotation = 90;
+	float turretPitch = 22.5;
 
 	float tRot = 0;
 	float tPitch = PI / 8;

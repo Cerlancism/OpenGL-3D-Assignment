@@ -36,7 +36,7 @@ void Environment::DrawGround()
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	int areasize = 5;
+	int areasize = 10;
 	glPushMatrix();
 	glScalef(20, 20, 20);
 	glTranslatef(-6 * areasize /2, 0, -6 * areasize /2);
