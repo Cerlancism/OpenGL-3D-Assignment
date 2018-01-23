@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#include "WinBase.h"
 
 //Logs a string using methods like to_string
 void Debug::Log(std::string log)

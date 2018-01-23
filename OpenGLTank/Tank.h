@@ -34,8 +34,8 @@ public:
 	Vector3f TurretDirection;
 	float TurnSpeed = 200;
 	float TurretTurnSpeed = 100;
-	float MaxSpeed = 50;
-	float Drag = 10;
+	float MaxSpeed = 35;
+	float Drag = 15;
 
 	Tank();
 	void BuildTree();

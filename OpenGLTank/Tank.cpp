@@ -81,7 +81,7 @@ void Tank::Update()
 {
 	currentAcceleration = sin(abs(currentSpeed) / MaxSpeed * (PI)) * (MaxSpeed / 1.5) + 1;
 	currentSpeed = abs(currentSpeed) >= MaxSpeed ? currentSpeed : currentSpeed += (accelerationState * currentAcceleration * Clock::DeltaTime);
-	float currentDrag = Drag * Clock::DeltaTime * (abs(currentSpeed) / 10) + 0.1 * Clock::DeltaTime;
+	float currentDrag = Drag * Clock::DeltaTime * (abs(currentSpeed) / 50) + 0.1 * Clock::DeltaTime;
 	float positiveDrag = currentSpeed - currentDrag, negativeDrag = currentSpeed + currentDrag;
 	currentSpeed = currentSpeed > 0 ? positiveDrag < 0 ? 0 : positiveDrag : negativeDrag > 0 ? 0 : negativeDrag;
 	//Debug::Log(to_string(currentSpeed));
@@ -96,6 +96,10 @@ void Tank::Update()
 	Position.X += Direction.X * currentSpeed * Clock::DeltaTime;
 	Position.Z += Direction.Z * currentSpeed * Clock::DeltaTime;
 
+	float flight = -2 * Clock::DeltaTime + (abs(accelerationState * currentSpeed * 0.1) * Clock::DeltaTime);
+	flight = Position.Y + flight >= 0 ? flight : 0;
+	Position.Y += flight;
+	Debug::Log(to_string(flight));
 	if (turretPitch >= 0 || turretPitch <= 45)
 	{
 		float newRotation = turretPitch + turretPitchState * TurretTurnSpeed * Clock::DeltaTime;
@@ -118,7 +122,7 @@ void Tank::Update()
 	glPushMatrix();
 	glMultMatrixf(tree->matrix);
 	glRotatef(rotationState * TurnSpeed * Clock::DeltaTime, 0, 1, 0);
-	glTranslatef(0, 0, currentSpeed * Clock::DeltaTime);
+	glTranslatef(0, flight, currentSpeed * Clock::DeltaTime);
 	glGetFloatv(GL_MODELVIEW_MATRIX, tree->matrix);// get & stores transform
 	glLoadIdentity();
 	glPopMatrix();

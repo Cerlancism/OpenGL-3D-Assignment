@@ -45,13 +45,13 @@
     <ClInclude Include="Vector3f.h">
       <Filter>Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="Debug.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ColorInt.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Debug.h">
       <Filter>Utilities</Filter>
     </ClInclude>
   </ItemGroup>
