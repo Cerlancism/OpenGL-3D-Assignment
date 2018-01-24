@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "ColorInt.h"
-
-
+// A simple color holder class to hold colors of int range from 0 ~ 255.
 ColorInt::ColorInt()
 {
 	Red = 0;

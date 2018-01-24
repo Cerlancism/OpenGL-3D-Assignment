@@ -10,7 +10,7 @@ void Texture::InitialiseAllGlobal()
 {
 	initialiseGroundTexture();
 }
-
+// Generic texture initialiser to convert from a 2D color array
 void Texture::Initialise(vector<vector<ColorInt>> colors)
 {
 	int nrOfCheckersOnRow = colors.size();
@@ -43,6 +43,7 @@ void Texture::Initialise(vector<vector<ColorInt>> colors)
 
 void Texture::initialiseGroundTexture()
 {
+	// Generate the 2D color array.
 	ColorInt light{ 151, 108 , 74 };
 	ColorInt dark{ 100, 80, 40 };
 	vector<vector<ColorInt>> colors;
@@ -51,10 +52,11 @@ void Texture::initialiseGroundTexture()
 	{
 		colors.push_back(vector<ColorInt>(divisions));
 		for (int j = 0; j < divisions; j++)
-		{
+		{// 50% of random chance for an ground patch to be light or dark colored.
 			colors[i][j] = (rand() % 2) == 0 ? light : dark;
 		}
 	}
+	// Initialise the ground texture with generated color array.
 	GroundTexture.Initialise(colors);
 }
 

@@ -1,7 +1,7 @@
 #pragma once
 
 #define DRAW_BASE_FUNCTION_ID 0
-#define DRAW_LOWERARM_FUNCTION_ID 1
+#define DRAW_TURRET_FUNCTION_ID 1
 #define DRAW_JOINT_FUNCTION_ID 3
 
 typedef struct TreeNode

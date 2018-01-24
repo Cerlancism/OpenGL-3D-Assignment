@@ -1,15 +1,16 @@
 #include "stdafx.h"
 #include "Environment.h"
 
+// Class for the ground and a simple skybox based on a large sphere.
 Environment Environment::Global;
 GLUquadric* skySphere;
 
 Material skyMaterial =
 {
-	{ 0.5, 2, 3, 1 }, // Ambient
-	{ 0, 1, 3, 1 }, // Diffuse
-	{ 0, 0, 0, 1 }, // Specular
-	8						// Shininess
+	{ 0.5, 2.0, 3.0, 1 }, // Ambient
+	{ 0.0, 1.0, 3.0, 1 }, // Diffuse
+	{ 0.0, 0.0, 0.0, 1 }, // Specular
+	8					  // Shininess
 };
 
 Environment::Environment()

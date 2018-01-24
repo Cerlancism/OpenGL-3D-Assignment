@@ -5,6 +5,7 @@ Texture bodyTexture;
 
 Tank::Tank()
 {
+	// Initialise quadratic normals.
 	jointQuadratic = gluNewQuadric();
 	gluQuadricDrawStyle(jointQuadratic, GLU_FILL);
 
@@ -13,7 +14,7 @@ Tank::Tank()
 
 	turretQuadratic = gluNewQuadric();
 	gluQuadricDrawStyle(turretQuadratic, GLU_FILL);
-
+	// Initialise tank texture pattern.
 	ColorInt light{ 0, 250 , 0 };
 	ColorInt dark{ 0, 100, 0 };
 	vector<vector<ColorInt>> colors;
@@ -38,23 +39,23 @@ Tank::~Tank()
 
 void Tank::BuildTree()
 {
-	// The root of the tree (represents the base of Robot Arm)
+	// The root of the tree (represents the base of tank).
 	tree = new TreeNode;
 	tree->child = 0;
 	tree->sibling = 0;
 	tree->drawFunctionID = DRAW_BASE_FUNCTION_ID;
 	glLoadIdentity();
 	glGetFloatv(GL_MODELVIEW_MATRIX, tree->matrix);
-	// The lower arm
+	// The turrent.
 	turretNode = new TreeNode;
 	turretNode->child = 0;
 	turretNode->sibling = 0;
-	turretNode->drawFunctionID = DRAW_LOWERARM_FUNCTION_ID;
+	turretNode->drawFunctionID = DRAW_TURRET_FUNCTION_ID;
 	glLoadIdentity();
 	glTranslatef(0, 1, 0);
 	glRotatef(-22.5, 1, 0, 0);
 	glGetFloatv(GL_MODELVIEW_MATRIX, turretNode->matrix);
-	// The first joint
+	// The turrent joint.
 	jointNode = new TreeNode;
 	jointNode->child = 0;
 	jointNode->sibling = 0;
@@ -62,44 +63,39 @@ void Tank::BuildTree()
 	glLoadIdentity();
 	glTranslatef(0, 1, 0);
 	glGetFloatv(GL_MODELVIEW_MATRIX, jointNode->matrix);
-	// The second joint
-	TreeNode* jointNode2 = new TreeNode;
-	jointNode2->child = 0;
-	jointNode2->sibling = 0;
-	jointNode2->drawFunctionID = DRAW_JOINT_FUNCTION_ID;
-	glLoadIdentity();
-	glTranslatef(0, 0, 2);
-	glGetFloatv(GL_MODELVIEW_MATRIX, jointNode2->matrix);
 	// Plugging the nodes in the tree together
 	tree->child = turretNode;
 	turretNode->sibling = jointNode;
 }
 
-int holdtime = 0;
+int fireHoldTime = 0;
+int flightMode = 0;
 
 void Tank::Update()
 {
+	// Calculate accelerations. Using sin for slightly more realistic movement of heavy vehicle and showing inertia.
 	currentAcceleration = sin(abs(currentSpeed) / MaxSpeed * (PI)) * (MaxSpeed / 1.5) + 1;
 	currentSpeed = abs(currentSpeed) >= MaxSpeed ? currentSpeed : currentSpeed += (accelerationState * currentAcceleration * Clock::DeltaTime);
+	// Add drag value to slow down speed eg: inertia against air resistance
 	float currentDrag = Drag * Clock::DeltaTime * (abs(currentSpeed) / 50) + 0.1 * Clock::DeltaTime;
 	float positiveDrag = currentSpeed - currentDrag, negativeDrag = currentSpeed + currentDrag;
 	currentSpeed = currentSpeed > 0 ? positiveDrag < 0 ? 0 : positiveDrag : negativeDrag > 0 ? 0 : negativeDrag;
 	//Debug::Log(to_string(currentSpeed));
-
+	// Track the turning yaw of the tank.
 	Rotation.Y = fmod(Rotation.Y * 180.0 / PI + (rotationState * TurnSpeed * Clock::DeltaTime), 360.0f);
 	Rotation.Y = Rotation.Y < 0 ? 360 + Rotation.Y : Rotation.Y;
 	Rotation.Y = Rotation.Y * PI / 180.0;
-
+	// Interpret the global raw rotation of the tank to generalise into a direction vector.
 	Direction.X = sin(Rotation.Y);
 	Direction.Z = cos(Rotation.Y);
-
+	// Track the global position of the tank.
 	Position.X += Direction.X * currentSpeed * Clock::DeltaTime;
 	Position.Z += Direction.Z * currentSpeed * Clock::DeltaTime;
-
+	// Flight is a cheat/test feature to make the tank fly
 	float flight = -2 * Clock::DeltaTime + (abs(accelerationState * currentSpeed * 0.1) * Clock::DeltaTime);
-	flight = Position.Y + flight >= 0 ? flight : 0;
+	flight = Position.Y + flight >= 0 ? flight * flightMode : 0;
 	Position.Y += flight;
-	Debug::Log(to_string(flight));
+	// Limit the turret pitch angle from 0 ~ 45 degrees.
 	if (turretPitch >= 0 || turretPitch <= 45)
 	{
 		float newRotation = turretPitch + turretPitchState * TurretTurnSpeed * Clock::DeltaTime;
@@ -108,7 +104,7 @@ void Tank::Update()
 		turretPitch = newRotation;
 		turretPitchState = (turretPitch == 0 && turretPitchState == -1) || (turretPitch == 45 && turretPitchState == 1) ? 0 : turretPitchState;
 	}
-
+	// Interprete the turret rotation and positions to determine and track the aiming direction.
 	tRot += turretRotationState * TurretTurnSpeed * Clock::DeltaTime * PI / 180.0;
 	tPitch += turretPitchState * TurretTurnSpeed * Clock::DeltaTime * PI / 180.0;
 	TurretDirection.X = sin(Rotation.Y + tRot);
@@ -116,32 +112,33 @@ void Tank::Update()
 	TurretDirection.Y = sin(tPitch);
 	TurretDirection.X *= cos(tPitch);
 	TurretDirection.Z *= cos(tPitch);
-
+	// Track the position of the turret.
 	TurretPosition = TurretDirection * 1.5 + Position + Vector3f(0, 1, 0);
-
+	// Update the tank base position and rotation transformations.
 	glPushMatrix();
 	glMultMatrixf(tree->matrix);
 	glRotatef(rotationState * TurnSpeed * Clock::DeltaTime, 0, 1, 0);
 	glTranslatef(0, flight, currentSpeed * Clock::DeltaTime);
-	glGetFloatv(GL_MODELVIEW_MATRIX, tree->matrix);// get & stores transform
+	glGetFloatv(GL_MODELVIEW_MATRIX, tree->matrix);
 	glLoadIdentity();
 	glPopMatrix();
-
+	// Update the turret raw rotation.
 	glPushMatrix();
 	glRotatef(turretRotationState * TurretTurnSpeed * Clock::DeltaTime, 0, 1, 0);
 	glMultMatrixf(turretNode->matrix);
-	glGetFloatv(GL_MODELVIEW_MATRIX, turretNode->matrix);// get & stores transform
+	glGetFloatv(GL_MODELVIEW_MATRIX, turretNode->matrix);
 	glLoadIdentity();
 	glPopMatrix();
-
+	// Update the turret pitch rotation
 	glPushMatrix();
 	glMultMatrixf(turretNode->matrix);
 	glRotatef(turretPitchState * -TurretTurnSpeed * Clock::DeltaTime, 1, 0, 0);
-	glGetFloatv(GL_MODELVIEW_MATRIX, turretNode->matrix);// get & stores transform
+	glGetFloatv(GL_MODELVIEW_MATRIX, turretNode->matrix);
+	glLoadIdentity();
 	glPopMatrix();
-
-	if (holdtime > 3)
-	{
+	// Continuous firing if the space key hold more than after 3 of the key down event updates.
+	if (fireHoldTime > 3)
+	{// Instantiate the missle based on the turret position, direction and also the tank speed.
 		Missle::FireMissle(TurretPosition, TurretDirection, currentSpeed);
 	}
 }
@@ -149,8 +146,9 @@ void Tank::Update()
 void Tank::Draw()
 {
 	glEnable(GL_LIGHTING);
+	// Draw the model hierarchy tree all together.
 	DrawTree(tree);
-
+	// Draw the turret tip seperately for eaiser debug to test tracked turrent positions and rotation.
 	glPushMatrix();
 	glTranslatef(TurretPosition.X, TurretPosition.Y, TurretPosition.Z);
 	SetMaterial(&yellowPlasticMaterial);
@@ -181,7 +179,7 @@ void Tank::DrawFunction(int id)
 		case DRAW_BASE_FUNCTION_ID:
 			DrawBase();
 			break;
-		case DRAW_LOWERARM_FUNCTION_ID:
+		case DRAW_TURRET_FUNCTION_ID:
 			DrawTurret();
 			break;
 		case DRAW_JOINT_FUNCTION_ID:
@@ -194,11 +192,13 @@ void Tank::DrawBase()
 {
 	glPushMatrix();
 	SetMaterial(&darkGreenMaterial);
+	// List of predefined relative wheel positionings.
 	vector<Vector3f> wheelPositons = 
 	{
 		Vector3f(0.5,0,1),Vector3f(-0.8,0,1), Vector3f(0.5,0,-1), Vector3f(-0.8,0,-1),
 		Vector3f(0.5,0,0.33),Vector3f(-0.8,0,0.33), Vector3f(0.5,0,-0.33), Vector3f(-0.8,0,-0.33)
 	};
+	// Draw all the wheels
 	for (int i = 0; i < wheelPositons.size(); i++)
 	{
 		Vector3f wheelposition = wheelPositons[i];
@@ -206,7 +206,9 @@ void Tank::DrawBase()
 		glTranslatef(wheelposition.X, wheelposition.Y, wheelposition.Z);
 		glTranslatef(0, 0.3, 0);
 		glRotatef(90, 0, 1, 0);
+		// Draw the wheel cylinder.
 		gluCylinder(base, 0.3, 0.3, 0.3, 16, 16);
+		// Draw the wheel side covers.
 		int k = 0;
 		int definition = 36;
 		glBegin(GL_TRIANGLE_FAN);
@@ -221,7 +223,7 @@ void Tank::DrawBase()
 		glPopMatrix();
 	}
 	glPopMatrix();
-
+	// Draw the rectangle body with tank texture.
 	glPushMatrix();
 
 	glEnable(GL_TEXTURE_2D);
@@ -300,7 +302,7 @@ void Tank::DrawBase()
 	glVertex3f(0, 0, 1);
 	glTexCoord2f(0.1, 0.2);
 	glVertex3f(0, 0, -1);
-	glTexCoord2f(0.05, 1); // Distorting texture for simple variance
+	glTexCoord2f(0.05, 1); // Distorting the texture for simple variance.
 	glVertex3f(-0.7, 0, -1);
 	glTexCoord2f(0.7, 0);
 	glVertex3f(-0.7, 0, 1);
@@ -344,8 +346,7 @@ void Tank::DrawJoint()
 
 void Tank::HandleKeyDown(WPARAM wParam)
 {
-	// Handle the various key-presses
-	// TODO: Handle all other key-presses
+	// Handle the various key-presses, using state variables to support multi key-presses
 	switch (wParam)
 	{
 		case VK_LEFT:
@@ -381,11 +382,9 @@ void Tank::HandleKeyDown(WPARAM wParam)
 			break;
 
 		case VK_SPACE:
-			holdtime++;
+			fireHoldTime++;
 			break;
 	}
-
-	glLoadIdentity();
 }
 
 void Tank::HandleKeyUp(WPARAM wParam)
@@ -426,8 +425,14 @@ void Tank::HandleKeyUp(WPARAM wParam)
 
 		case VK_SPACE:
 			Debug::Log("Fire!");
+			// Instantiate the missle based on the turret position, direction and also the tank speed.
 			Missle::FireMissle(TurretPosition, TurretDirection, currentSpeed);
-			holdtime = 0;
+			fireHoldTime = 0;
+			break;
+
+		case VK_F1:
+			// Activate/deactivate cheat/test flight mode
+			flightMode = flightMode == 0 ? 1 : 0;
 			break;
 	}
 }

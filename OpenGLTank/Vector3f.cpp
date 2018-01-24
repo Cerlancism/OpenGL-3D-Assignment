@@ -28,13 +28,6 @@ Vector3f Vector3f::CalculateNormal(Vector3f p1, Vector3f p2, Vector3f p3)
 Vector3f Vector3f::CalculateCenter(Vector3f p1, Vector3f p2, Vector3f p3)
 {
 	Vector3f result;
-	//result.X = (min(min(p1.X, p2.X), p3.X) + max(max(p1.X, p2.X), p3.X)) / 2;
-	//result.Y = (min(min(p1.Y, p2.Y), p3.Y) + max(max(p1.Y, p2.Y), p3.Y)) / 2;
-	//result.Z = (min(min(p1.Z, p2.Z), p3.Z) + max(max(p1.Z, p2.Z), p3.Z)) / 2;
-	
-	//result.X = (p1.X + p2.X + p3.X) / 3;
-	//result.Y = (p1.Y + p2.Y + p3.Y) / 3;
-	//result.Z = (p1.Z + p2.Z + p3.Z) / 3;
 
 	result = p1 + p2 + p3;
 	result = result / 3;
@@ -66,9 +59,9 @@ Vector3f Vector3f::Normalised()
 	return normalised;
 }
 
-std::string Vector3f::ToString()
+string Vector3f::ToString()
 {
-	return std::string(to_string(X) + ", " + to_string(Y) + ", " + to_string(Z));
+	return string(to_string(X) + ", " + to_string(Y) + ", " + to_string(Z));
 }
 
 //Operator behaviours
