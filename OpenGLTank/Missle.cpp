@@ -50,8 +50,6 @@ void Missle::DrawMissle()
 		position.X += currentSpeed * direction.X * time;
 		position.Y += currentSpeed * (asin(direction.Y)) * time - 0.5f * Gravity * time * time;
 		position.Z += currentSpeed * direction.Z * time;
-		direction.Y = direction.Y < -0.8 ? -0.8 : direction.Y;
-
 	}
 
 	float yawAngle = asin(direction.X) * 180 / PI * (1 + asin(abs(direction.Y)));
