@@ -25,8 +25,9 @@ void Missle::FireMissle(Vector3f startPosition, Vector3f startDirection, float t
 	missle.direction = startDirection;
 	missle.currentSpeed = StartSpeed + tankSpeed * abs(startDirection.Z);
 	missle.currentSpeed = missle.currentSpeed < 10 ? 10 : missle.currentSpeed;
-	missles.push_back(missle);
 	missle.currentSpeed = 1;
+	missles.push_back(missle);
+	
 }
 
 void Missle::DrawAll()
@@ -39,16 +40,16 @@ void Missle::DrawAll()
 
 void Missle::DrawMissle()
 {
-	if (position.Y > 0)
+	if (position.Y > 0.5)
 	{
 		time += Clock::DeltaTime;
 		/*float newdirectY = direction.Y - Clock::DeltaTime * Gravity / 5;
 		direction.Y = newdirectY < -0.8 ? -0.8 : newdirectY;
 		position = position + direction * Clock::DeltaTime * currentSpeed;*/
 
-		position.X += currentSpeed * cos(atan2(direction.Y, direction.X)) * time;
-		position.Y += currentSpeed * sin(atan2(direction.Y, direction.X)) * time - 0.5f * Gravity * time * time;
-		position.Z += currentSpeed * cos(atan2(direction.Y, direction.Z)) * time;
+		position.X += currentSpeed * direction.X * time;
+		position.Y += currentSpeed * (asin(direction.Y)) * time - 0.5f * Gravity * time * time;
+		position.Z += currentSpeed * direction.Z * time;
 
 	}
 
