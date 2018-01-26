@@ -17,6 +17,7 @@ private:
 	Vector3f direction;
 	float currentSpeed;
 	float time;
+	float pitchAngleDirection = 0;
 
 	GLUquadric *missleQuadratic;
 

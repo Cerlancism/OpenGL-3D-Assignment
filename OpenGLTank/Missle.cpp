@@ -4,7 +4,7 @@
 #include <gl\GLU.h>
 
 std::vector<Missle> Missle::missles;
-float Missle::StartSpeed = 1;
+float Missle::StartSpeed = 3;
 float Missle::Gravity = 9.81f;
 float time = 0;
 
@@ -24,7 +24,7 @@ void Missle::FireMissle(Vector3f startPosition, Vector3f startDirection, float t
 	missle.position = startPosition + startDirection * 0.5;
 	missle.direction = startDirection;
 	missle.currentSpeed = StartSpeed + tankSpeed * abs(startDirection.Z);
-	missle.currentSpeed = missle.currentSpeed > 2? missle.currentSpeed : 2;
+	missle.currentSpeed = missle.currentSpeed > 2 ? missle.currentSpeed : 2;
 	missle.currentSpeed = missle.currentSpeed < 5 ? missle.currentSpeed : 5;
 	missles.push_back(missle);
 	
@@ -39,21 +39,21 @@ void Missle::DrawAll()
 }
 
 void Missle::DrawMissle()
-{
-	if (position.Y > 0.5)
+{	
+	if (position.Y > 0.3)
 	{
 		time += Clock::DeltaTime;
-		/*float newdirectY = direction.Y - Clock::DeltaTime * Gravity / 5;
-		direction.Y = newdirectY < -0.8 ? -0.8 : newdirectY;
-		position = position + direction * Clock::DeltaTime * currentSpeed;*/
-
-		position.X += currentSpeed * direction.X * time;
-		position.Y += currentSpeed * (asin(direction.Y)) * time - 0.5f * Gravity * time * time;
-		position.Z += currentSpeed * direction.Z * time;
+		Vector3f oldposition = position;
+		position.X += currentSpeed * direction.X * cos(asin(direction.Y)) * time;
+		position.Y += currentSpeed * direction.Y * time - 0.5f * Gravity * time * time;
+		position.Z += currentSpeed * direction.Z * cos(asin(direction.Y)) * time;
+		Vector3f newdirection = (position - oldposition).Normalised();
+		pitchAngleDirection = newdirection.Y;
+		position.Y < 0.3 ? 0.3 : position.Y;
 	}
 
 	float yawAngle = asin(direction.X) * 180 / PI * (1 + asin(abs(direction.Y)));
-	float pitchAngle = asin(direction.Y) * 180 / PI;
+	float pitchAngle = asin(pitchAngleDirection) * 180 / PI;
 	glEnable(GL_LIGHTING);
 	glPushMatrix();
 	glTranslatef(position.X, position.Y, position.Z);
