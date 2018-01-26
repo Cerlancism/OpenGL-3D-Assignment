@@ -4,7 +4,7 @@
 #include <gl\GLU.h>
 
 std::vector<Missle> Missle::missles;
-float Missle::StartSpeed = 25;
+float Missle::StartSpeed = 1;
 float Missle::Gravity = 9.81f;
 float time = 0;
 
@@ -24,8 +24,8 @@ void Missle::FireMissle(Vector3f startPosition, Vector3f startDirection, float t
 	missle.position = startPosition + startDirection * 0.5;
 	missle.direction = startDirection;
 	missle.currentSpeed = StartSpeed + tankSpeed * abs(startDirection.Z);
-	missle.currentSpeed = missle.currentSpeed < 10 ? 10 : missle.currentSpeed;
-	missle.currentSpeed = 1;
+	missle.currentSpeed = missle.currentSpeed > 2? missle.currentSpeed : 2;
+	missle.currentSpeed = missle.currentSpeed < 5 ? missle.currentSpeed : 5;
 	missles.push_back(missle);
 	
 }
@@ -50,6 +50,7 @@ void Missle::DrawMissle()
 		position.X += currentSpeed * direction.X * time;
 		position.Y += currentSpeed * (asin(direction.Y)) * time - 0.5f * Gravity * time * time;
 		position.Z += currentSpeed * direction.Z * time;
+		direction.Y = direction.Y < -0.8 ? -0.8 : direction.Y;
 
 	}
 
