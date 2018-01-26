@@ -16,6 +16,7 @@ private:
 	Vector3f position;
 	Vector3f direction;
 	float currentSpeed;
+	float time;
 
 	GLUquadric *missleQuadratic;
 

@@ -5,7 +5,8 @@
 
 std::vector<Missle> Missle::missles;
 float Missle::StartSpeed = 25;
-float Missle::Gravity = 10;
+float Missle::Gravity = 9.81f;
+float time = 0;
 
 Missle::Missle()
 {
@@ -25,6 +26,7 @@ void Missle::FireMissle(Vector3f startPosition, Vector3f startDirection, float t
 	missle.currentSpeed = StartSpeed + tankSpeed * abs(startDirection.Z);
 	missle.currentSpeed = missle.currentSpeed < 10 ? 10 : missle.currentSpeed;
 	missles.push_back(missle);
+	missle.currentSpeed = 1;
 }
 
 void Missle::DrawAll()
@@ -39,9 +41,15 @@ void Missle::DrawMissle()
 {
 	if (position.Y > 0)
 	{
-		float newdirectY = direction.Y - Clock::DeltaTime * Gravity / 5;
+		time += Clock::DeltaTime;
+		/*float newdirectY = direction.Y - Clock::DeltaTime * Gravity / 5;
 		direction.Y = newdirectY < -0.8 ? -0.8 : newdirectY;
-		position = position + direction * Clock::DeltaTime * currentSpeed;
+		position = position + direction * Clock::DeltaTime * currentSpeed;*/
+
+		position.X += currentSpeed * cos(atan2(direction.Y, direction.X)) * time;
+		position.Y += currentSpeed * sin(atan2(direction.Y, direction.X)) * time - 0.5f * Gravity * time * time;
+		position.Z += currentSpeed * cos(atan2(direction.Y, direction.Z)) * time;
+
 	}
 
 	float yawAngle = asin(direction.X) * 180 / PI * (1 + asin(abs(direction.Y)));
@@ -63,6 +71,7 @@ void Missle::DrawMissle()
 	glBegin(GL_TRIANGLE_FAN);
 	for (k = 0.0f; k <= definition * 2; k++)
 		glVertex2f(0.14 * cos(3.142 * k / definition), 0.14 * sin(3.142 * k / definition));
+
 	glEnd();
 	glPopMatrix();
 	glDisable(GL_LIGHTING);
