@@ -4,8 +4,6 @@
 
 #include "stdafx.h"
 #include "Missile.h"
-#include "Vector3f.h"
-#include <gl\GLU.h>
 
 std::vector<Missile> Missile::missles;
 float Missile::StartSpeed = Missile::MissileSpeed::MEDIUM;

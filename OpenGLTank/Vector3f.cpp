@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Vector3f.h"
-#include <cmath>
 
 Vector3f::Vector3f()
 {
