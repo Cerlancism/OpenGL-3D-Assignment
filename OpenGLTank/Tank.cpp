@@ -1,3 +1,7 @@
+/*
+	Done by Chen Yu.
+*/
+
 #include "stdafx.h"
 #include "Tank.h"
 
@@ -139,7 +143,7 @@ void Tank::Update()
 	// Continuous firing if the space key hold more than after 3 of the key down event updates.
 	if (fireHoldTime > 3)
 	{// Instantiate the missle based on the turret position, direction and also the tank speed.
-		Missle::FireMissle(TurretPosition, TurretDirection, currentSpeed);
+		Missile::FireMissle(TurretPosition, TurretDirection, currentSpeed);
 	}
 }
 
@@ -212,13 +216,11 @@ void Tank::DrawBase()
 		int k = 0;
 		int definition = 36;
 		glBegin(GL_TRIANGLE_FAN);
-		for (k = 0.0f; k <= definition * 2; k++)
-			glVertex2f(0.3*cos(3.142 * k / definition), 0.3*sin(3.142 * k / definition));
+		for (k = 0.0f; k <= definition * 2; k++) glVertex2f(0.3*cos(3.142 * k / definition), 0.3*sin(3.142 * k / definition));
 		glEnd();
 		glTranslatef(0, 0, 0.3);
 		glBegin(GL_TRIANGLE_FAN);
-		for (k = 0.0f; k <= definition * 2; k++)
-			glVertex2f(0.3*cos(3.142 * k / definition), 0.3*sin(3.142 * k / definition));
+		for (k = 0.0f; k <= definition * 2; k++) glVertex2f(0.3*cos(3.142 * k / definition), 0.3*sin(3.142 * k / definition));
 		glEnd();
 		glPopMatrix();
 	}
@@ -426,7 +428,7 @@ void Tank::HandleKeyUp(WPARAM wParam)
 		case VK_SPACE:
 			Debug::Log("Fire!");
 			// Instantiate the missle based on the turret position, direction and also the tank speed.
-			Missle::FireMissle(TurretPosition, TurretDirection, currentSpeed);
+			Missile::FireMissle(TurretPosition, TurretDirection, currentSpeed);
 			fireHoldTime = 0;
 			break;
 

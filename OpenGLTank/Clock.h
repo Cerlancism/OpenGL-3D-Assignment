@@ -9,9 +9,9 @@ public:
 
 	Clock();
 
-	static void Start();
-	static double Refresh();
-	static double TimePassedSinceStartTime();
+	void Start();
+	double Refresh();
+	double TimePassedSinceStartTime();
 
 	~Clock();
 };

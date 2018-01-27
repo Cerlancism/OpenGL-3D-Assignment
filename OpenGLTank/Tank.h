@@ -22,7 +22,6 @@ public:
 	GLUquadricObj *base;
 	GLUquadricObj *turretQuadratic;
 	GLUquadricObj *jointQuadratic;
-	// Following Nodes need to available in HandleKeyDown
 	TreeNode* tree;
 	TreeNode* turretNode;
 	TreeNode* jointNode;
@@ -41,26 +40,24 @@ public:
 	void BuildTree();
 	void DrawTree(TreeNode* root);
 	void DrawFunction(int id);
+	void Update();
 	void Draw();
 	void DrawBase();
 	void DrawTurret();
 	void DrawJoint();
-	void Update();
 	void HandleKeyDown(WPARAM wParam);
 	void HandleKeyUp(WPARAM wParam);
 	~Tank();
 
 private:
 	int accelerationState = 0;
-	float currentAcceleration = 0;
-	float currentSpeed = 0;
 	int rotationState = 0;
 	int turretRotationState = 0;
 	int turretPitchState = 0;
-
+	float currentAcceleration = 0;
+	float currentSpeed = 0;
 	float turretRotation = 90;
 	float turretPitch = 22.5;
-
 	float tRot = 0;
 	float tPitch = PI / 8;
 };

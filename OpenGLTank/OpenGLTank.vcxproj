@@ -155,7 +155,7 @@
     <ClInclude Include="ColorInt.h" />
     <ClInclude Include="Debug.h" />
     <ClInclude Include="Environment.h" />
-    <ClInclude Include="Missle.h" />
+    <ClInclude Include="Missile.h" />
     <ClInclude Include="OpenGLTank.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />
@@ -169,7 +169,7 @@
     <ClCompile Include="ColorInt.cpp" />
     <ClCompile Include="Debug.cpp" />
     <ClCompile Include="Environment.cpp" />
-    <ClCompile Include="Missle.cpp" />
+    <ClCompile Include="Missile.cpp" />
     <ClCompile Include="OpenGLTank.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

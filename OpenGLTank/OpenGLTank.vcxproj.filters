@@ -30,9 +30,6 @@
     <ClInclude Include="Environment.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Missle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Tank.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -54,6 +51,9 @@
     <ClInclude Include="Debug.h">
       <Filter>Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="Missile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -63,9 +63,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Environment.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Missle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Tank.cpp">
@@ -85,6 +82,9 @@
     </ClCompile>
     <ClCompile Include="ColorInt.cpp">
       <Filter>Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Missile.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
