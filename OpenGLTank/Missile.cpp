@@ -31,7 +31,7 @@ void Missile::FireMissle(Vector3f startPosition, Vector3f startDirection, float 
 		missle.position = missle.startPosition = startPosition + startDirection * 0.5;
 		missle.direction = startDirection;
 		// The speed will inherit tank's speed and turrent direction.
-		missle.currentSpeed = StartSpeed + tankSpeed * startDirection.Z;
+		missle.currentSpeed = StartSpeed + tankSpeed * sin(atan2(startDirection.Z, startDirection.X));
 		missle.currentSpeed = missle.currentSpeed < 5 ? 5 : missle.currentSpeed;
 		// Track the start time for its use in trajectory fomula.
 		missle.startTime = lastFireTime = Clock::GlobalClock.TimePassedSinceStartTime();
