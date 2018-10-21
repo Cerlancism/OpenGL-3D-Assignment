@@ -79,11 +79,12 @@ void Tank::Update()
 {
 	// Calculate accelerations. Using sin for slightly more realistic movement of heavy vehicle and showing inertia.
 	currentAcceleration = sin(abs(currentSpeed) / MaxSpeed * (PI)) * (MaxSpeed / 1.5) + 1;
-	currentSpeed = abs(currentSpeed) >= MaxSpeed ? currentSpeed : currentSpeed += (accelerationState * currentAcceleration * Clock::DeltaTime);
+	currentSpeed = abs(currentSpeed) >= MaxSpeed ? currentSpeed : currentSpeed + (accelerationState * currentAcceleration * Clock::DeltaTime);
 	// Add drag value to slow down speed eg: inertia against air resistance
 	float currentDrag = Drag * Clock::DeltaTime * (abs(currentSpeed) / 50) + 0.1 * Clock::DeltaTime;
-	float positiveDrag = currentSpeed - currentDrag, negativeDrag = currentSpeed + currentDrag;
-	currentSpeed = currentSpeed > 0 ? positiveDrag < 0 ? 0 : positiveDrag : negativeDrag > 0 ? 0 : negativeDrag;
+	float positiveDrag = currentSpeed - currentDrag;
+	float negativeDrag = currentSpeed + currentDrag;
+	currentSpeed = currentSpeed > 0 ? (positiveDrag < 0 ? 0 : positiveDrag) : (negativeDrag > 0 ? 0 : negativeDrag);
 	//Debug::Log(to_string(currentSpeed));
 	// Track the turning yaw of the tank.
 	Rotation.Y = fmod(Rotation.Y * 180.0 / PI + (rotationState * TurnSpeed * Clock::DeltaTime), 360.0f);

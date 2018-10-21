@@ -7,12 +7,14 @@ public:
 
 	static Clock GlobalClock;
 
-	Clock();
-
 	void Start();
 	double Refresh();
 	double TimePassedSinceStartTime();
 
+	
+
+private:
+	Clock();
 	~Clock();
 };
 
