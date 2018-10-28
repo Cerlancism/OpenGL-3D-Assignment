@@ -427,7 +427,7 @@ void Tank::HandleKeyUp(WPARAM wParam)
 			break;
 
 		case VK_SPACE:
-			Debug::Log("Fire!");
+			Debug::Log("Fire!", "TANK");
 			// Instantiate the missle based on the turret position, direction and also the tank speed.
 			Missile::FireMissle(TurretPosition, TurretDirection, currentSpeed);
 			fireHoldTime = 0;
